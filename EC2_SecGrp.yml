@@ -1,0 +1,73 @@
+---
+AWSTemplateFormatVersion: "2010-09-09"
+
+Description: >
+   This template would create
+   a new security group and
+   and creates a new EC2 instance
+
+Parameters:
+  InstanceType:
+    Type: String
+    AllowedValues:
+      - t2.micro
+      - m1.small
+      - m1.large
+    Default: t2.micro
+    Description: Enter the type of Instance
+
+  MyVPC:
+    Type: "AWS::EC2::VPC::Id"
+    Description: Choose from created VPCs
+
+  MyKey:
+    Type: "AWS::EC2::KeyPair::KeyName"
+    Default: MrStark
+    Description: Choose from existing key
+
+  MyAMI:
+    Type: String
+    Default: "ami-bf5540df"
+
+  MySubnet:
+    Type: "AWS::EC2::Subnet::Id"
+    Description: Choose a Subnet
+
+
+Resources:
+  DemoSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Allow http to client host
+      VpcId:
+        Ref: MyVPC
+      SecurityGroupIngress:
+      - IpProtocol: tcp
+        FromPort: '22'
+        ToPort: '22'
+        CidrIp: 0.0.0.0/0
+      SecurityGroupEgress:
+      - IpProtocol: tcp
+        FromPort: '22'
+        ToPort: '22'
+        CidrIp: 0.0.0.0/0
+      Tags:
+        - Key : name
+          Value : Demo
+
+  DemoInstance:
+    Type: AWS::EC2::Instance
+    Properties:
+      KeyName:
+        Ref : MyKey
+      ImageId:
+        Ref : MyAMI
+      InstanceType:
+        Ref : InstanceType
+      SubnetId:
+        Ref : MySubnet
+      SecurityGroupIds:
+        - Ref: DemoSecurityGroup
+      Tags:
+        - Key : name
+          Value : Demo
