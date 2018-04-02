@@ -22,7 +22,6 @@ Parameters:
 
   MyKey:
     Type: "AWS::EC2::KeyPair::KeyName"
-    Default: MrStark
     Description: Choose from existing key
 
   MyAMI:
